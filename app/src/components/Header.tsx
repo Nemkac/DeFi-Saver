@@ -1,31 +1,26 @@
-import { Link } from '@tanstack/react-router'
-import ThemeToggle from './ThemeToggle'
+interface HeaderProps {
+  title?: string
+  onMenuToggle: () => void
+}
 
-export default function Header() {
+export default function Header({ title, onMenuToggle }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-(--line) bg-(--header-bg) px-4 backdrop-blur-lg">
-      <nav className="page-wrap flex flex-wrap items-center gap-x-3 gap-y-2 py-3 sm:py-4">
-        <div className="ml-auto flex items-center gap-1.5 sm:ml-0 sm:gap-2">
-          <ThemeToggle />
-        </div>
-
-        <div className="order-3 flex w-full flex-wrap items-center gap-x-4 gap-y-1 pb-1 text-sm font-semibold sm:order-2 sm:w-auto sm:flex-nowrap sm:pb-0">
-          <Link
-            to="/"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            Home
-          </Link>
-          <Link
-            to="/about"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            About
-          </Link>
-        </div>
-      </nav>
+    <header className="sticky top-0 z-30 flex items-center justify-between h-14 px-4 border-b border-(--line) bg-(--header-bg) backdrop-blur-lg">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 rounded-lg text-(--sea-ink-soft) hover:bg-(--link-bg-hover) hover:text-(--sea-ink) transition-colors"
+          aria-label="Toggle menu"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
+            <line x1="2" y1="4.5" x2="16" y2="4.5" />
+            <line x1="2" y1="9" x2="16" y2="9" />
+            <line x1="2" y1="13.5" x2="16" y2="13.5" />
+          </svg>
+        </button>
+        <span className="text-sm font-bold text-(--sea-ink)">{title ?? ''}</span>
+      </div>
+      <div className="flex items-center gap-3">Profile</div>
     </header>
   )
 }
