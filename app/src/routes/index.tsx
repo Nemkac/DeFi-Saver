@@ -1,30 +1,36 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { type MRT_ColumnDef } from 'mantine-react-table'
 import DataTable from '../components/data/DataTable'
 import type { Position } from '#/interfaces/position'
 import DataCard from '#/components/data/DataCard'
 import DataFilters from '#/components/data/DataFilters'
+import { useQuery } from '@tanstack/react-query'
+import { fetchCdps, type CollateralFilter } from '#/lib/cdpService'
 
 export const Route = createFileRoute('/')({ component: App })
 
-const data: Position[] = [
-  { id: '1000', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$18,312.00', ratio: 239.23 },
-  { id: '1001', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$5,000.00', ratio: 239.23 },
-  { id: '1002', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 USDC', debt: '$21,200.00', ratio: 100.23 },
-  { id: '1003', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$440.00', ratio: 512.23 },
-  { id: '1004', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$3,619.00', ratio: 101.23 },
-  { id: '1005', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$12,000.00', ratio: 101.23 },
-  { id: '1006', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 USDC', debt: '$8,312.00', ratio: 101.23 },
-  { id: '1007', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 USDC', debt: '$35,000.00', ratio: 101.23 },
-  { id: '1008', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$200.00', ratio: 101.23 },
-  { id: '1009', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$7,440.00', ratio: 101.23 },
-  { id: '1010', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$3,619.00', ratio: 239.23 },
-  { id: '1011', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$12,000.00', ratio: 239.23 },
-  { id: '1012', owner: '0xc71332e827eAab4399Ada7C03FA1530BC05C3C83', collateral: '5.10 ETH', debt: '$2,000.00', ratio: 239.23 },
-]
-
 function App() {
+
+  const [collateral, setCollateral] = useState<string | null>(null);
+  const [cdpId, setCdpId] = useState('');
+  const [debounceCdpId, setDebounceCdpId] = useState('');
+  const [fetchProgress, setFetchProgress] = useState<string | null>(null);
+
+  // Debounce for 500ms
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounceCdpId(cdpId), 500)
+    return () => clearTimeout(timer);
+  }, [cdpId]);
+
+  const { data = [], isLoading, isError, error } = useQuery({
+    queryKey: ['cdps', debounceCdpId, collateral],
+    queryFn: () => fetchCdps(debounceCdpId || null, collateral as CollateralFilter, setFetchProgress),
+    staleTime: 30_000,
+  })
+
+  if (isError) console.error("CDP fetch error: ", error);
+
   const columns = useMemo<MRT_ColumnDef<Position>[]>(
     () => [
       { accessorKey: 'id', header: 'ID', size: 80 },
@@ -77,10 +83,20 @@ function App() {
   return (
     <main className="p-6 flex flex-col gap-4">
 
-      <DataFilters />
-
+      <DataFilters
+        collateral={collateral}
+        onCollateralChange={setCollateral}
+        cdpId={cdpId}
+        onCdpIdChange={setCdpId}
+      />
+      {isLoading && fetchProgress && (
+        <div className="flex items-center gap-3 px-1">
+          <div className="size-4 rounded-full border-2 border-action border-t-transparent animate-spin" />
+          <p className="text-p-sm text-secondary">{fetchProgress}</p>
+        </div>
+      )}
       <div className="hidden md:block overflow-x-auto min-w-0">
-        <DataTable columns={columns} data={data} storageKey="positions-table" />
+        <DataTable columns={columns} isLoading={isLoading} data={data} storageKey="positions-table" />
       </div>
 
       <div className="flex md:hidden flex-col gap-8">

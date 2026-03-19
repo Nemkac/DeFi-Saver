@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import {
     DropdownMenu,
@@ -11,26 +10,19 @@ import {
 import InputField from '../ui/InputField'
 
 const COLLATERAL_OPTIONS = [
-    {
-        icon: 'eth.svg',
-        id: 'eth',
-        title: 'ETH'
-    },
-    {
-        icon: 'usdc.svg',
-        id: 'usdc',
-        title: 'USDC'
-    },
-    {
-        icon: 'wbtc.png',
-        id: 'wbtc',
-        title: 'WBTC'
-    },
+    { icon: 'eth.svg', id: 'ETH-A', title: 'ETH-A' },
+    { icon: 'wbtc.png', id: 'WBTC-A', title: 'WBTC-A' },
+    { icon: 'usdc.svg', id: 'USDC-A', title: 'USDC-A' },
 ]
 
-const DataFilters = () => {
-    const [collateral, setCollateral] = useState<string | null>(null)
+type DataFiltersProps = {
+    collateral: string | null
+    onCollateralChange: (value: string | null) => void
+    cdpId: string
+    onCdpIdChange: (value: string) => void
+}
 
+const DataFilters = ({ ...props }: DataFiltersProps) => {
     const collateralDrodpownDisplay = (collateral: string | null) => {
         if (!collateral) return 'All';
 
@@ -50,7 +42,7 @@ const DataFilters = () => {
                         <div className='flex flex-row w-full justify-between items-center text-secondary text-p-md-bold gap-6'>
                             Collateral Type:
                             <span className='text-primary'>
-                                {collateralDrodpownDisplay(collateral)}
+                                {collateralDrodpownDisplay(props.collateral)}
                             </span>
                         </div>
                         <ChevronDown className="size-5 text-secondary" />
@@ -59,11 +51,11 @@ const DataFilters = () => {
                 <DropdownMenuContent>
                     <DropdownMenuLabel>Collateral Type</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={() => setCollateral(null)}>
+                    <DropdownMenuItem onSelect={() => props.onCollateralChange(null)}>
                         All
                     </DropdownMenuItem>
                     {COLLATERAL_OPTIONS.map((option) => (
-                        <DropdownMenuItem key={option.id} onSelect={() => setCollateral(option.id)}>
+                        <DropdownMenuItem key={option.id} onSelect={() => props.onCollateralChange(option.id)}>
                             <div className='flex flex-row items-center gap-2'>
                                 <img src={option.icon} className='size-4' />
                                 {option.title}
@@ -73,7 +65,7 @@ const DataFilters = () => {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <InputField title='CDP ID: ' placeholder='Enter CDP ID' />
+            <InputField title='CDP ID: ' placeholder='Enter CDP ID' value={props.cdpId} onChange={props.onCdpIdChange} />
 
         </div>
     )
