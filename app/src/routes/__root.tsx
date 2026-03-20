@@ -5,9 +5,10 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import AppShell from '../components/layout/AppShell'
+import AppShell from '../app/app-shell'
 
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
+import ModalProvider from '../providers/modal/modal-provider'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
@@ -54,7 +55,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
         <TanStackQueryProvider>
-          <AppShell>{children}</AppShell>
+          <ModalProvider>
+            <AppShell>{children}</AppShell>
+          </ModalProvider>
           <TanStackDevtools
             config={{
               position: 'bottom-right',

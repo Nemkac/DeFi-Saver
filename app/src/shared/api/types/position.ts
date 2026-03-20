@@ -5,4 +5,7 @@ export interface Position extends Record<string, unknown> {
     debt: string
     ratio: number
     ilk: string
+    ilkBytes: string
+    collateralAmount: number
+    actualDebt: number
 }

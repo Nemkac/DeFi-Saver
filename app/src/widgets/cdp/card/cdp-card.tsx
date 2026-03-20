@@ -1,5 +1,5 @@
-import type { Position } from '#/interfaces/position'
-import InfoField from '../ui/InfoField'
+import type { Position } from '#/shared/api/types/position'
+import InfoField from '../../../shared/ui/info-field/info-field'
 
 interface DataCardProps {
     position: Position

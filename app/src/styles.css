@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sofia+Sans+Condensed:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sofia+Sans+Condensed:wght@400;500;600&display=swap");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Sofia Sans Condensed", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -234,7 +234,7 @@ pre code {
 @utility text-p-xsm-link { font-size: 0.75rem; font-weight: 500; line-height: 1.5; text-decoration: underline; text-underline-offset: 3px; }
 
 .display-title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
 }
 
 .sidebar-link {
@@ -261,53 +261,7 @@ pre code {
   font-weight: 600;
 }
 
-.mrt-wrapper table thead tr th,
-.mrt-wrapper table tbody tr td {
-  border-color: var(--table-border) !important;
-  background-color: transparent !important;
-}
-
-.mrt-wrapper table tbody tr td {
-  font-size: 1rem !important;
-  font-weight: 400 !important;
-  line-height: 1.6 !important;
-}
-
-.mrt-wrapper .mantine-Input-input,
-.mrt-wrapper .mantine-Select-input,
-.mrt-wrapper .mantine-TextInput-input {
-  background-color: var(--table-input-bg) !important;
-  border-color: var(--table-border) !important;
-  color: var(--text-primary) !important;
-}
-
-.mrt-wrapper .mantine-Text-root,
-.mrt-wrapper .mantine-NativeSelect-input,
-.mrt-wrapper label,
-.mrt-wrapper select {
-  color: var(--text-primary) !important;
-  background-color: transparent !important;
-}
-
-.mrt-wrapper .mantine-NativeSelect-input,
-.mrt-wrapper select {
-  background-color: var(--table-input-bg) !important;
-  border-color: var(--table-border) !important;
-}
-
-.mrt-wrapper .mantine-ActionIcon-root {
-  color: var(--text-primary) !important;
-  border: 1px solid transparent !important;
-  transition: background-color 150ms ease, border-color 150ms ease !important;
-}
-
-.mrt-wrapper .mantine-ActionIcon-root:hover {
-  background-color: var(--table-hover-bg) !important;
-  border: 1px solid var(--table-accent) !important;
-  color: var(--text-primary) !important;
-}
-
-.mrt-wrapper table tbody tr:hover td {
-  border-color: var(--table-accent) !important;
-  background-color: var(--table-hover-bg) !important;
+@keyframes bounce-x {
+  0%, 100% { transform: translateX(0); }
+  50%       { transform: translateX(5px); }
 }

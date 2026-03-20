@@ -10,7 +10,7 @@ const InfoField = ({ title, orientation = 'row', children }: InfoFieldProps) => 
             <p className="text-p-xsm-bold text-secondary">
                 {title}
             </p>
-            <p className="text-p-md text-primary truncate">
+            <p className="text-p-md text-primary truncate min-w-0">
                 {children}
             </p>
         </div>
