@@ -1,0 +1,86 @@
+@reference "../../../styles.css";
+
+.mrt-wrapper .mantine-Paper-root {
+  background-color: var(--table-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+.mrt-wrapper .mantine-Box-root[class*="Toolbar"] {
+  background-color: var(--table-bg) !important;
+}
+
+.mrt-wrapper table thead tr {
+  background-color: var(--table-bg) !important;
+}
+
+.mrt-wrapper table thead tr th {
+  background-color: var(--table-bg) !important;
+  color: var(--table-header-text) !important;
+  border-color: var(--table-border) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+}
+
+.mrt-wrapper table tbody tr td {
+  border-color: var(--table-border) !important;
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mrt-wrapper table tbody tr td:first-of-type {
+  box-shadow: inset 3px 0 0 transparent;
+  transition: box-shadow 150ms ease;
+}
+
+.mrt-wrapper table tbody tr:hover td:first-of-type {
+  box-shadow: inset 3px 0 0 var(--table-accent);
+}
+
+.mrt-wrapper table tbody tr:hover td {
+  border-color: var(--table-accent) !important;
+  background-color: var(--table-hover-bg) !important;
+}
+
+.mrt-wrapper .mantine-Input-input,
+.mrt-wrapper .mantine-Select-input,
+.mrt-wrapper .mantine-TextInput-input {
+  background-color: var(--table-input-bg) !important;
+  border-color: var(--table-border) !important;
+  color: var(--text-primary) !important;
+}
+
+.mrt-wrapper .mantine-Text-root,
+.mrt-wrapper .mantine-NativeSelect-input,
+.mrt-wrapper label,
+.mrt-wrapper select {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+.mrt-wrapper .mantine-NativeSelect-input,
+.mrt-wrapper select {
+  background-color: var(--table-input-bg) !important;
+  border-color: var(--table-border) !important;
+}
+
+.mrt-wrapper .mantine-ActionIcon-root {
+  color: var(--text-primary) !important;
+  border: 1px solid transparent !important;
+  transition: background-color 150ms ease, border-color 150ms ease !important;
+}
+
+.mrt-wrapper .mantine-ActionIcon-root:hover {
+  background-color: var(--table-hover-bg) !important;
+  border: 1px solid var(--table-accent) !important;
+  color: var(--text-primary) !important;
+}
