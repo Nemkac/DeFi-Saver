@@ -9,6 +9,7 @@ import AppShell from '../app/app-shell'
 
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
 import ModalProvider from '../providers/modal/modal-provider'
+import { LoadingProvider } from '../providers/loading/loading-provider'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
@@ -55,9 +56,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
         <TanStackQueryProvider>
-          <ModalProvider>
-            <AppShell>{children}</AppShell>
-          </ModalProvider>
+          <LoadingProvider>
+            <ModalProvider>
+              <AppShell>{children}</AppShell>
+            </ModalProvider>
+          </LoadingProvider>
           <TanStackDevtools
             config={{
               position: 'bottom-right',

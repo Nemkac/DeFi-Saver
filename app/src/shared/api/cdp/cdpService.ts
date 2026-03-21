@@ -1,6 +1,6 @@
 import { hexToString } from 'viem'
 import { ilkToAsset } from '@defisaver/tokens'
-import { client } from './viemClient'
+import { client } from '../../lib/utility-functions/viemClient'
 import { CDP_MANAGER_ADDRESS, CDP_MANAGER_ABI, VAT_ABI, VAT_ADDRESS, SPOTTER_ADDRESS, SPOTTER_ABI } from './contracts'
 import type { Position } from '#/shared/api/types/position'
 
@@ -172,6 +172,11 @@ export async function fetchCdps(
     })
 
     return collected.slice(0, 20)
+}
+
+export async function fetchLastCdps(): Promise<Position[]> {
+    const positions = await fetchCdps(null, null)
+    return positions.slice(0, 10)
 }
 
 export async function fetchCdpDetail(

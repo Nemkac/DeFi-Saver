@@ -10,6 +10,11 @@ export type ModularTableProps<TData extends Record<string, unknown>> = {
     storageKey?: string
     loadingText?: string
     onRowClick?: (row: TData) => void
+    showTopToolbar?: boolean
+    showPagination?: boolean
+    showDensityToggle?: boolean
+    showFullScreenToggle?: boolean
+    showColumnVisibility?: boolean
 }
 
 type ModularTableImplProps<TData extends Record<string, unknown>> = ModularTableProps<TData> & {
@@ -25,6 +30,11 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
     onRowClick,
     columnSizing,
     onColumnSizingChange,
+    showTopToolbar = true,
+    showPagination = true,
+    showDensityToggle = true,
+    showFullScreenToggle = true,
+    showColumnVisibility = true,
 }: ModularTableImplProps<TData>) {
     const table = useMantineReactTable({
         columns,
@@ -34,11 +44,13 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         enableColumnResizing: true,
         columnResizeMode: 'onChange',
         enableColumnActions: true,
-        enableDensityToggle: true,
-        enableFullScreenToggle: true,
-        enableHiding: true,
+        enableDensityToggle: showDensityToggle,
+        enableFullScreenToggle: showFullScreenToggle,
+        enableHiding: showColumnVisibility,
         enableSorting: true,
-        enablePagination: true,
+        enablePagination: showPagination,
+        enableBottomToolbar: showPagination,
+        enableTopToolbar: showTopToolbar,
         enableFilters: false,
         mantineLoadingOverlayProps: {
             overlayColor: 'var(--table-bg)',
@@ -72,7 +84,7 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         },
         mantineTableHeadCellProps: {
             sx: { backgroundColor: 'var(--table-bg) !important', color: 'var(--table-header-text) !important' },
-            className: 'text-p-xsm-bold tracking-widest',
+            className: 'text-p-md',
         },
         mantineTableBodyCellProps: {
             className: 'text-primary',
