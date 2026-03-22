@@ -4,7 +4,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 export function LoadingScreen() {
     return (
         <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-page"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-surface-primary"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.6, ease: 'easeInOut' as const } }}
         >
