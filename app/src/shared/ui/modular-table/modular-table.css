@@ -47,8 +47,15 @@
 }
 
 .mrt-wrapper table tbody tr:hover td {
-  border-color: var(--table-accent) !important;
   background-color: var(--table-hover-bg) !important;
+}
+
+.mrt-wrapper table tbody tr.mrt-row-highlighted td {
+  background-color: var(--table-hover-bg) !important;
+}
+
+.mrt-wrapper table tbody tr.mrt-row-highlighted td:first-of-type {
+  box-shadow: inset 3px 0 0 var(--table-accent);
 }
 
 .mrt-wrapper .mantine-Input-input,

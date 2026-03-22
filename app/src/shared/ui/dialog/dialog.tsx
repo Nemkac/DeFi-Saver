@@ -26,7 +26,7 @@ function DialogOverlay({
         <DialogPrimitive.Backdrop
             data-slot="dialog-overlay"
             className={cn(
-                "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 fixed inset-0 isolate z-50 bg-black/60 backdrop-blur-sm duration-100",
+                "fixed inset-0 isolate z-50",
                 className,
             )}
             {...props}
@@ -50,11 +50,10 @@ function DialogContent({
             <DialogPrimitive.Popup
                 data-slot="dialog-content"
                 className={cn(
-                    "bg-elevated border border-border text-primary data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 fixed left-1/2 z-50 flex flex-col w-full max-w-[calc(100%-2rem)] -translate-x-1/2 gap-4 overflow-y-auto overflow-x-hidden rounded-xl p-6 duration-100 outline-none",
+                    "bg-elevated border border-border text-primary data-open:animate-in data-closed:animate-out data-open:fade-in-0 data-closed:fade-out-0 data-open:slide-in-from-right-8 data-closed:slide-out-to-right-8 fixed right-6 z-50 flex flex-col w-full gap-4 overflow-y-auto overflow-x-hidden rounded-xl p-6 duration-200 outline-none",
                     isMobile
-                        ? "top-[calc(50%+43.5px)] max-h-[calc(100vh-120px)] -translate-y-1/2"
-                        : "top-1/2 max-h-[85vh] max-w-sm -translate-y-1/2",
-
+                        ? "top-[calc(50%+43.5px)] max-h-[calc(100vh-120px)] max-w-[calc(100%-3rem)] -translate-y-1/2"
+                        : "top-1/2 max-h-[85vh] max-w-lg -translate-y-1/2",
                     className,
                 )}
                 {...props}

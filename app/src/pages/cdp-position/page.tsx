@@ -1,51 +1,13 @@
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { ModularTable } from '#/shared'
+import { useEffect, useState } from 'react'
+import { ModularTable, CdpCardSkeleton } from '#/shared'
 import type { Position } from '#/shared/api/types/position'
 import DataCard from '#/widgets/cdp/card/cdp-card'
 import DataFilters from '#/widgets/cdp/filters/cdp-filters-section'
 import { useQuery } from '@tanstack/react-query'
-import { fetchCdpDetail, fetchCdps, type CollateralFilter } from '#/lib/cdpService'
+import { fetchCdps, type CollateralFilter } from '#/shared/api/cdp/cdp-service'
 import { useModal } from '#/providers/modal/modal-context'
-import InfoField from '#/shared/ui/info-field/info-field'
 import { useDataTablePageConfig } from '#/shared/config/use-data-table-config'
-
-function CdpDetailContent({ position }: { position: Position }) {
-    const { data: cdpDetail, isLoading, isError } = useQuery({
-        queryKey: ['cdp-detail', position.ilkBytes],
-        queryFn: () => fetchCdpDetail(position.ilkBytes, position.collateralAmount, position.actualDebt),
-        staleTime: 60_000,
-        refetchOnWindowFocus: false,
-        retry: 1,
-    })
-
-    return (
-        <div className="flex flex-col gap-3">
-            <InfoField title="Vault">{position.ilk}</InfoField>
-            <InfoField title="Collateral">{position.collateral}</InfoField>
-            <InfoField title="Debt">{position.debt}</InfoField>
-            <InfoField title="Ratio">{position.ratio}%</InfoField>
-
-            {isLoading && (
-                <div className="flex items-center gap-2 pt-2">
-                    <div className="size-4 rounded-full border-2 border-action border-t-transparent animate-spin" />
-                    <p className="text-p-sm text-secondary">Loading vault details...</p>
-                </div>
-            )}
-            {isError && (
-                <p className="text-p-sm text-red-400">Failed to load vault details</p>
-            )}
-
-            {cdpDetail && (
-                <>
-                    <div className="my-1 h-px bg-border" />
-                    <InfoField title="Liquidation Ratio">{cdpDetail.liquidationRatio}%</InfoField>
-                    <InfoField title="Liquidation Price">${cdpDetail.liquidationPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}</InfoField>
-                </>
-            )}
-        </div>
-    )
-}
+import { CdpDetailContent } from '#/widgets/cdp/detail/cdp-detail-content'
 
 export function CdpPositionsPage() {
     const modal = useModal()
@@ -54,6 +16,8 @@ export function CdpPositionsPage() {
     const [cdpId, setCdpId] = useState('');
     const [debounceCdpId, setDebounceCdpId] = useState('');
     const [fetchProgress, setFetchProgress] = useState<string | null>(null);
+    const [openModalId, setOpenModalId] = useState<string | null>(null);
+    const [highlightedRowId, setHighlightedRowId] = useState<string | null>(null);
 
     useEffect(() => {
         const timer = setTimeout(() => setDebounceCdpId(cdpId), 500)
@@ -69,20 +33,33 @@ export function CdpPositionsPage() {
 
     const { columns } = useDataTablePageConfig();
 
+    const tableLabel = isLoading ? undefined : (() => {
+        const count = data.length
+        if (collateral && debounceCdpId) return `Displaying ${count} ${collateral} CDP positions closest to #${debounceCdpId}`
+        if (collateral) return `Displaying last ${count} ${collateral} CDP positions`
+        if (debounceCdpId) return `Displaying ${count} CDP positions closest to #${debounceCdpId}`
+        return `Displaying last ${count} CDP positions`
+    })()
+
     if (isError) console.error("CDP fetch error: ", error);
 
     const handleRowClick = (row: unknown) => {
         const position = row as Position
-        modal.openGeneric({
+
+        if (openModalId) modal.close(openModalId)
+
+        setHighlightedRowId(position.id)
+
+        const id = modal.openGeneric({
             title: `CDP #${position.id}`,
-            description: position.owner,
-            content: (
-                <>
-                    <div className="h-px bg-border" />
-                    <CdpDetailContent position={position} />
-                </>
-            ),
+            content: (<CdpDetailContent position={position} />),
+            onClose: () => {
+                setHighlightedRowId(null)
+                setOpenModalId(null)
+            },
         })
+
+        setOpenModalId(id)
     }
 
     return (
@@ -100,6 +77,8 @@ export function CdpPositionsPage() {
                     columns={columns}
                     isLoading={isLoading}
                     loadingText={fetchProgress ?? undefined}
+                    label={tableLabel}
+                    highlightedRowId={highlightedRowId ?? undefined}
                     data={data}
                     storageKey="positions-table"
                     onRowClick={handleRowClick}
@@ -107,9 +86,19 @@ export function CdpPositionsPage() {
             </div>
 
             <div className="flex md:hidden flex-col gap-8">
-                {data.map((position) => (
-                    <DataCard key={position.id} position={position} />
-                ))}
+                {isLoading
+                    ? (
+                        <>
+                            {fetchProgress && (
+                                <p className="text-p-sm text-secondary">{fetchProgress}</p>
+                            )}
+                            {Array.from({ length: 3 }).map((_, i) => <CdpCardSkeleton key={i} />)}
+                        </>
+                    )
+                    : data.map((position) => (
+                        <DataCard key={position.id} position={position} />
+                    ))
+                }
             </div>
 
         </main>

@@ -9,7 +9,14 @@ export type ModularTableProps<TData extends Record<string, unknown>> = {
     isLoading?: boolean
     storageKey?: string
     loadingText?: string
+    label?: string
+    highlightedRowId?: string
     onRowClick?: (row: TData) => void
+    showTopToolbar?: boolean
+    showPagination?: boolean
+    showDensityToggle?: boolean
+    showFullScreenToggle?: boolean
+    showColumnVisibility?: boolean
 }
 
 type ModularTableImplProps<TData extends Record<string, unknown>> = ModularTableProps<TData> & {
@@ -22,9 +29,16 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
     data,
     isLoading,
     loadingText,
+    label,
+    highlightedRowId,
     onRowClick,
     columnSizing,
     onColumnSizingChange,
+    showTopToolbar = true,
+    showPagination = true,
+    showDensityToggle = true,
+    showFullScreenToggle = true,
+    showColumnVisibility = true,
 }: ModularTableImplProps<TData>) {
     const table = useMantineReactTable({
         columns,
@@ -34,12 +48,21 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         enableColumnResizing: true,
         columnResizeMode: 'onChange',
         enableColumnActions: true,
-        enableDensityToggle: true,
-        enableFullScreenToggle: true,
-        enableHiding: true,
+        enableDensityToggle: showDensityToggle,
+        enableFullScreenToggle: showFullScreenToggle,
+        enableHiding: showColumnVisibility,
         enableSorting: true,
-        enablePagination: true,
+        enablePagination: showPagination,
+        enableBottomToolbar: showPagination,
+        enableTopToolbar: showTopToolbar,
         enableFilters: false,
+        renderTopToolbarCustomActions: label
+            ? () => (
+                <div className="flex items-center h-full p-2">
+                    <span className="text-p-sm uppercase text-secondary">{label}</span>
+                </div>
+            )
+            : undefined,
         mantineLoadingOverlayProps: {
             overlayColor: 'var(--table-bg)',
             overlayOpacity: 0.95,
@@ -72,27 +95,24 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         },
         mantineTableHeadCellProps: {
             sx: { backgroundColor: 'var(--table-bg) !important', color: 'var(--table-header-text) !important' },
-            className: 'text-p-xsm-bold tracking-widest',
+            className: 'text-p-md',
         },
         mantineTableBodyCellProps: {
             className: 'text-primary',
         },
-        mantineTableBodyRowProps: ({ row }) => ({
-            onClick: () => onRowClick?.(row.original),
-            style: { cursor: onRowClick ? 'pointer' : undefined },
-            sx: {
-                '& td:first-of-type': {
-                    boxShadow: 'inset 3px 0 0 transparent',
-                    transition: 'box-shadow 150ms ease',
+        mantineTableBodyRowProps: ({ row }) => {
+            const isHighlighted = highlightedRowId != null && String(row.original.id) === highlightedRowId
+            return {
+                onClick: () => onRowClick?.(row.original),
+                style: { cursor: onRowClick ? 'pointer' : undefined },
+                className: isHighlighted ? 'mrt-row-highlighted' : undefined,
+                sx: {
+                    '&:hover': {
+                        backgroundColor: 'var(--table-hover-bg) !important',
+                    },
                 },
-                '&:hover td:first-of-type': {
-                    boxShadow: 'inset 3px 0 0 var(--table-accent)',
-                },
-                '&:hover': {
-                    backgroundColor: 'var(--table-hover-bg) !important',
-                },
-            },
-        }),
+            }
+        },
     })
 
     return (

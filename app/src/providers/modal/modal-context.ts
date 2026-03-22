@@ -8,6 +8,7 @@ export type ModalProps = {
     showCloseButton?: boolean;
     contentClassName?: string;
     headerClassName?: string;
+    onClose?: () => void;
 }
 
 export type CustomModalRenderProps = {
@@ -28,6 +29,7 @@ export type ModalContextType = {
     openGeneric: (props: ModalProps) => string;
     openCustom: (render: (props: CustomModalRenderProps) => ReactNode) => string;
     close: (id: string) => void;
+    closeAll: () => void;
 }
 
 export const ModalContext = createContext<ModalContextType | null>(null);
