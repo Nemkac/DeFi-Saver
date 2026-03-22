@@ -1,11 +1,11 @@
 import { IconArrowRight } from '@tabler/icons-react'
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { fetchLastCdps } from '#/shared/api/cdp/cdpService'
-import { isFirstLoad } from '#/shared/lib/first-load'
-import { ModularTable } from '#/shared'
+import { fetchLastCdps } from '#/shared/api/cdp/cdp-service'
+import { isFirstLoad } from '#/shared/lib/utility-functions/first-load'
+import { ModularTable, CdpCardSkeleton } from '#/shared'
 import { useDataTablePageConfig } from '#/shared/config/use-data-table-config'
 import { useModal } from '#/providers/modal/modal-context'
 import { CdpDetailContent } from '#/widgets/cdp/detail/cdp-detail-content'
@@ -26,6 +26,8 @@ const DashboardTableSection = () => {
     const shouldAnimate = useRef(isFirstLoad).current
     const modal = useModal()
     const { columns } = useDataTablePageConfig()
+    const [openModalId, setOpenModalId] = useState<string | null>(null)
+    const [highlightedRowId, setHighlightedRowId] = useState<string | null>(null)
 
     const { data = [], isLoading } = useQuery({
         queryKey: ['cdps-last-10'],
@@ -36,16 +38,21 @@ const DashboardTableSection = () => {
 
     const handleRowClick = (row: unknown) => {
         const position = row as Position
-        modal.openGeneric({
+
+        if (openModalId) modal.close(openModalId)
+
+        setHighlightedRowId(position.id)
+
+        const id = modal.openGeneric({
             title: `CDP #${position.id}`,
-            description: position.owner,
-            content: (
-                <>
-                    <div className="h-px bg-border" />
-                    <CdpDetailContent position={position} />
-                </>
-            ),
+            content: <CdpDetailContent position={position} />,
+            onClose: () => {
+                setHighlightedRowId(null)
+                setOpenModalId(null)
+            },
         })
+
+        setOpenModalId(id)
     }
 
     return (
@@ -79,6 +86,7 @@ const DashboardTableSection = () => {
                     isLoading={isLoading}
                     data={data}
                     storageKey="dashboard-positions-table"
+                    highlightedRowId={highlightedRowId ?? undefined}
                     onRowClick={handleRowClick}
                     showTopToolbar={false}
                     showPagination={false}
@@ -86,9 +94,12 @@ const DashboardTableSection = () => {
             </motion.div>
 
             <motion.div className="flex md:hidden flex-col gap-8" variants={item}>
-                {data.map((position) => (
-                    <DataCard key={position.id} position={position} />
-                ))}
+                {isLoading
+                    ? Array.from({ length: 3 }).map((_, i) => <CdpCardSkeleton key={i} />)
+                    : data.map((position) => (
+                        <DataCard key={position.id} position={position} />
+                    ))
+                }
             </motion.div>
         </motion.div>
     )

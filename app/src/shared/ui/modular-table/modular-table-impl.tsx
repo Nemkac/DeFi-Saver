@@ -9,6 +9,8 @@ export type ModularTableProps<TData extends Record<string, unknown>> = {
     isLoading?: boolean
     storageKey?: string
     loadingText?: string
+    label?: string
+    highlightedRowId?: string
     onRowClick?: (row: TData) => void
     showTopToolbar?: boolean
     showPagination?: boolean
@@ -27,6 +29,8 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
     data,
     isLoading,
     loadingText,
+    label,
+    highlightedRowId,
     onRowClick,
     columnSizing,
     onColumnSizingChange,
@@ -52,6 +56,13 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         enableBottomToolbar: showPagination,
         enableTopToolbar: showTopToolbar,
         enableFilters: false,
+        renderTopToolbarCustomActions: label
+            ? () => (
+                <div className="flex items-center h-full p-2">
+                    <span className="text-p-sm uppercase text-secondary">{label}</span>
+                </div>
+            )
+            : undefined,
         mantineLoadingOverlayProps: {
             overlayColor: 'var(--table-bg)',
             overlayOpacity: 0.95,
@@ -89,22 +100,19 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         mantineTableBodyCellProps: {
             className: 'text-primary',
         },
-        mantineTableBodyRowProps: ({ row }) => ({
-            onClick: () => onRowClick?.(row.original),
-            style: { cursor: onRowClick ? 'pointer' : undefined },
-            sx: {
-                '& td:first-of-type': {
-                    boxShadow: 'inset 3px 0 0 transparent',
-                    transition: 'box-shadow 150ms ease',
+        mantineTableBodyRowProps: ({ row }) => {
+            const isHighlighted = highlightedRowId != null && String(row.original.id) === highlightedRowId
+            return {
+                onClick: () => onRowClick?.(row.original),
+                style: { cursor: onRowClick ? 'pointer' : undefined },
+                className: isHighlighted ? 'mrt-row-highlighted' : undefined,
+                sx: {
+                    '&:hover': {
+                        backgroundColor: 'var(--table-hover-bg) !important',
+                    },
                 },
-                '&:hover td:first-of-type': {
-                    boxShadow: 'inset 3px 0 0 var(--table-accent)',
-                },
-                '&:hover': {
-                    backgroundColor: 'var(--table-hover-bg) !important',
-                },
-            },
-        }),
+            }
+        },
     })
 
     return (

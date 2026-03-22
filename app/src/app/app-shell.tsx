@@ -23,7 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="flex flex-col flex-1 lg:ml-60 min-h-screen">
           {isMobile && <Header onMenuToggle={() => setOpen((v) => !v)} />}
-          <main className="flex-1 p-6">{children}</main>
+          <main className="flex-1 py-4">{children}</main>
         </div>
       </div>
     </MantineProvider>

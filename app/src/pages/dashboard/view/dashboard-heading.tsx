@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { animate } from 'motion'
 import { useEffect, useRef } from 'react'
-import { isFirstLoad } from '#/shared/lib/first-load'
+import { isFirstLoad } from '#/shared/lib/utility-functions/first-load'
 
 const container = {
     hidden: {},

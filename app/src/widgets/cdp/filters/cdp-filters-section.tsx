@@ -17,7 +17,7 @@ type DataFiltersProps = {
 
 const DataFilters = ({ ...props }: DataFiltersProps) => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-4 w-full items-center gap-2 md:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 w-full items-center gap-2 md:gap-4">
             <SelectDropdown
                 label="Collateral Type"
                 value={props.collateral as 'ETH-A' | 'WBTC-A' | 'USDC-A' | null}

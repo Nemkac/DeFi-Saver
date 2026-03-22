@@ -5,7 +5,7 @@ interface HeaderProps {
 
 export default function Header({ title, onMenuToggle }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-14 px-4 border-b border-border bg-elevated backdrop-blur-lg">
+    <header className="sticky top-0 z-30 flex items-center h-14 px-4 border-b border-border bg-elevated backdrop-blur-lg">
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuToggle}
@@ -20,7 +20,6 @@ export default function Header({ title, onMenuToggle }: HeaderProps) {
         </button>
         <span className="text-p-md-bold text-primary">{title ?? ''}</span>
       </div>
-      <div className="flex items-center gap-3">Profile</div>
     </header>
   )
 }

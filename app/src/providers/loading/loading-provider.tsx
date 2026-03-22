@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useIsFetching, useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence } from 'motion/react'
 import { LoadingScreen } from '#/shared/ui/loading-screen/loading-screen'
-import { markFirstLoadDone, isFirstLoad } from '#/shared/lib/first-load'
-import { fetchLastCdps } from '#/shared/api/cdp/cdpService'
+import { markFirstLoadDone, isFirstLoad } from '#/shared/lib/utility-functions/first-load'
+import { fetchLastCdps } from '#/shared/api/cdp/cdp-service'
 
 export function LoadingProvider({ children }: { children: React.ReactNode }) {
     const queryClient = useQueryClient()

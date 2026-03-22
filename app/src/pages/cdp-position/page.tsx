@@ -1,11 +1,10 @@
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { ModularTable } from '#/shared'
+import { useEffect, useState } from 'react'
+import { ModularTable, CdpCardSkeleton } from '#/shared'
 import type { Position } from '#/shared/api/types/position'
 import DataCard from '#/widgets/cdp/card/cdp-card'
 import DataFilters from '#/widgets/cdp/filters/cdp-filters-section'
 import { useQuery } from '@tanstack/react-query'
-import { fetchCdps, type CollateralFilter } from '#/shared/api/cdp/cdpService'
+import { fetchCdps, type CollateralFilter } from '#/shared/api/cdp/cdp-service'
 import { useModal } from '#/providers/modal/modal-context'
 import { useDataTablePageConfig } from '#/shared/config/use-data-table-config'
 import { CdpDetailContent } from '#/widgets/cdp/detail/cdp-detail-content'
@@ -17,6 +16,8 @@ export function CdpPositionsPage() {
     const [cdpId, setCdpId] = useState('');
     const [debounceCdpId, setDebounceCdpId] = useState('');
     const [fetchProgress, setFetchProgress] = useState<string | null>(null);
+    const [openModalId, setOpenModalId] = useState<string | null>(null);
+    const [highlightedRowId, setHighlightedRowId] = useState<string | null>(null);
 
     useEffect(() => {
         const timer = setTimeout(() => setDebounceCdpId(cdpId), 500)
@@ -32,20 +33,33 @@ export function CdpPositionsPage() {
 
     const { columns } = useDataTablePageConfig();
 
+    const tableLabel = isLoading ? undefined : (() => {
+        const count = data.length
+        if (collateral && debounceCdpId) return `Displaying ${count} ${collateral} CDP positions closest to #${debounceCdpId}`
+        if (collateral) return `Displaying last ${count} ${collateral} CDP positions`
+        if (debounceCdpId) return `Displaying ${count} CDP positions closest to #${debounceCdpId}`
+        return `Displaying last ${count} CDP positions`
+    })()
+
     if (isError) console.error("CDP fetch error: ", error);
 
     const handleRowClick = (row: unknown) => {
         const position = row as Position
-        modal.openGeneric({
+
+        if (openModalId) modal.close(openModalId)
+
+        setHighlightedRowId(position.id)
+
+        const id = modal.openGeneric({
             title: `CDP #${position.id}`,
-            description: position.owner,
-            content: (
-                <>
-                    <div className="h-px bg-border" />
-                    <CdpDetailContent position={position} />
-                </>
-            ),
+            content: (<CdpDetailContent position={position} />),
+            onClose: () => {
+                setHighlightedRowId(null)
+                setOpenModalId(null)
+            },
         })
+
+        setOpenModalId(id)
     }
 
     return (
@@ -63,6 +77,8 @@ export function CdpPositionsPage() {
                     columns={columns}
                     isLoading={isLoading}
                     loadingText={fetchProgress ?? undefined}
+                    label={tableLabel}
+                    highlightedRowId={highlightedRowId ?? undefined}
                     data={data}
                     storageKey="positions-table"
                     onRowClick={handleRowClick}
@@ -70,9 +86,19 @@ export function CdpPositionsPage() {
             </div>
 
             <div className="flex md:hidden flex-col gap-8">
-                {data.map((position) => (
-                    <DataCard key={position.id} position={position} />
-                ))}
+                {isLoading
+                    ? (
+                        <>
+                            {fetchProgress && (
+                                <p className="text-p-sm text-secondary">{fetchProgress}</p>
+                            )}
+                            {Array.from({ length: 3 }).map((_, i) => <CdpCardSkeleton key={i} />)}
+                        </>
+                    )
+                    : data.map((position) => (
+                        <DataCard key={position.id} position={position} />
+                    ))
+                }
             </div>
 
         </main>

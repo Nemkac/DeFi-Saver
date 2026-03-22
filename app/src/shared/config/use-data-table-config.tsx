@@ -48,9 +48,10 @@ export const useDataTablePageConfig = () => {
                 accessorKey: 'ratio',
                 header: 'Ratio',
                 size: 100,
-                Cell: ({ cell }) => {
+                Cell: ({ cell, row }) => {
                     const ratioValue = cell.getValue<Position['ratio']>()
-                    const color = ratioValue >= 150 ? 'text-action' : 'text-red-400'
+                    const liquidationRatio = row.original.liquidationRatio
+                    const color = ratioValue >= liquidationRatio ? 'text-action' : 'text-red-400'
                     return <span className={`text-p-md-bold ${color}`}>{ratioValue}%</span>
                 },
             },

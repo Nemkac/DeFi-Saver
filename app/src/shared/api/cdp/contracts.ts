@@ -75,6 +75,16 @@ export const VAT_ABI = [
     }
 ] as const;
 
+export const DS_PROXY_ABI = [
+    {
+        name: 'owner',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ name: '', type: 'address' }],
+    },
+] as const
+
 export const SPOTTER_ABI = [
     {
         name: 'ilks',
