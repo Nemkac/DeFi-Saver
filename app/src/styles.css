@@ -8,47 +8,41 @@
 }
 
 @theme inline {
-  --color-primary:       var(--text-primary);
-  --color-secondary:     var(--text-secondary);
-  --color-action:        var(--action);
-  --color-action-hover:  var(--action-hover);
-  --color-page:          var(--bg);
-  --color-elevated:      var(--bg-elevated);
-  --color-hover:         var(--bg-hover);
-  --color-surface:       var(--surface);
-  --color-surface-raised: var(--surface-raised);
-  --color-border:        var(--border);
-
   /* Table colors */
   --color-table-bg:      var(--table-bg);
-  --color-table-border:  var(--table-border);
+  --color-table-border:  var(--color-stroke-primary);
   --color-table-input:   var(--table-input-bg);
-  --color-table-muted:   var(--table-header-text);
-  --color-table-accent:  var(--table-accent);
-  --color-table-hover:   var(--table-hover-bg);
+  --color-table-muted:   var(--color-on-surface-secondary);
+  --color-table-accent:  var(--color-indicator-primary);
+  --color-table-hover:   var(--color-feedback-primary);
+
+  /* Brand / status colors */
+  --color-light-green:              var(--light-green);
+  --color-dark-green:               var(--dark-green);
+  --color-light-red:                var(--light-red);
+  --color-dark-red:                 var(--dark-red);
+
+  /* On-surface text colors */
+  --color-on-surface-primary:       var(--on-surface-primary);
+  --color-on-surface-secondary:     var(--on-surface-secondary);
+  --color-on-surface-tertiary:      var(--on-surface-tertiary);
+
+  /* Stroke */
+  --color-stroke-primary:           var(--stroke-primary);
+
+  /* Surface backgrounds */
+  --color-surface-primary:          var(--surface-primary);
+  --color-surface-secondary:        var(--surface-secondary);
+  --color-surface-tertiary: var(--surface-tertiary);
+  --color-surface-gradient-end: var(--surface-gradient-end);
+
+  /* Feedback / indicator */
+  --color-feedback-primary:         var(--feedback-primary);
+  --color-indicator-primary:        var(--indicator-primary);
 }
 
-/* ─── Dark theme (default) ─── */
+/* ─── Dark theme ─── */
 :root {
-  --bg: #222831;
-  --bg-elevated: #1E2329;
-  --bg-hover: rgba(118, 171, 174, 0.12);
-
-  --text-primary: #eeeeee;
-  --text-secondary: rgba(238, 238, 238, 0.45);
-
-  --border: rgba(118, 171, 174, 0.18);
-
-  --action: #76abae;
-  --action-hover: #8fbfc2;
-
-  --surface: rgba(49, 54, 63, 0.7);
-  --surface-raised: rgba(49, 54, 63, 0.92);
-  --glint: rgba(118, 171, 174, 0.1);
-
-  --gradient-a: rgba(118, 171, 174, 0.22);
-  --gradient-b: rgba(118, 171, 174, 0.08);
-
   --sidebar-width: 240px;
   --header-height: 56px;
 
@@ -59,66 +53,30 @@
   --table-header-text: rgba(238, 238, 238, 0.5);
   --table-accent:      #5d3186;
   --table-hover-bg:    #5d31861a;
-}
 
-/* ─── Light theme ─── */
-:root[data-theme="light"] {
-  --bg: #f2f5f6;
-  --bg-elevated: #ffffff;
-  --bg-hover: rgba(118, 171, 174, 0.1);
+  /* Brand / status */
+  --light-green:              #37B06F;
+  --dark-green:               #277B4E;
+  --light-red:                #EB5757;
+  --dark-red:                 #A53D3D;
 
-  --text-primary: #222831;
-  --text-secondary: #5e6b72;
+  /* On-surface text */
+  --on-surface-primary:       #F9FAFB;
+  --on-surface-secondary:     #B2C1CC;
+  --on-surface-tertiary:      #90A1B9;
 
-  --border: rgba(34, 40, 49, 0.1);
+  /* Stroke */
+  --stroke-primary:           #33414C;
 
-  --action: #4e8e91;
-  --action-hover: #3c7a7d;
+  /* Surface backgrounds */
+  --surface-primary:          #11181C;
+  --surface-secondary:        #21272D;
+  --surface-tertiary: #303942;
+  --surface-gradient-end: #171E24;
 
-  --surface: rgba(255, 255, 255, 0.8);
-  --surface-raised: rgba(255, 255, 255, 0.95);
-  --glint: rgba(255, 255, 255, 0.9);
-
-  --gradient-a: rgba(118, 171, 174, 0.18);
-  --gradient-b: rgba(118, 171, 174, 0.08);
-
-  --table-bg:          #ffffff;
-  --table-border:      #33414c;
-  --table-input-bg:    #f0f3f4;
-  --table-header-text: rgba(34, 40, 49, 0.5);
-  --table-accent:      #5d3186;
-  --table-hover-bg:    #5d31861a;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #f2f5f6;
-    --bg-elevated: #ffffff;
-    --bg-hover: rgba(118, 171, 174, 0.1);
-
-    --text-primary: #222831;
-    --text-secondary: #5e6b72;
-
-    --border: rgba(34, 40, 49, 0.1);
-
-    --action: #4e8e91;
-    --action-hover: #3c7a7d;
-
-    --surface: rgba(255, 255, 255, 0.8);
-    --surface-raised: rgba(255, 255, 255, 0.95);
-    --glint: rgba(255, 255, 255, 0.9);
-
-    --gradient-a: rgba(118, 171, 174, 0.18);
-    --gradient-b: rgba(118, 171, 174, 0.08);
-
-    /* Table */
-    --table-bg:          #ffffff;
-    --table-border:      #33414c;
-    --table-input-bg:    #f0f3f4;
-    --table-header-text: rgba(34, 40, 49, 0.5);
-    --table-accent:      #5d3186;
-    --table-hover-bg:    #5d31861a;
-  }
+  /* Feedback / indicator */
+  --feedback-primary:         #5D31861A;
+  --indicator-primary:        #5D3186;
 }
 
 * {
@@ -245,19 +203,19 @@ pre code {
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--on-surface-secondary);
   text-decoration: none;
   transition: background-color 150ms ease, color 150ms ease;
 }
 
 .sidebar-link:hover {
-  background: var(--bg-hover);
+  background: var(--surface-tertiary);
   color: var(--text-primary);
 }
 
 .sidebar-link.is-active {
-  background: var(--bg-hover);
-  color: var(--action);
+  background: var(--surface-tertiary);
+  color: var(--on-surface-primary);
   font-weight: 600;
 }
 

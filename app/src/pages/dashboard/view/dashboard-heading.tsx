@@ -64,17 +64,17 @@ const DashboardHeading = () => {
 
             <div className="grid grid-cols-2 w-full items-center gap-4 md:gap-8">
                 <motion.div className="flex flex-col gap-2" variants={item}>
-                    <h3 className="text-h3 text-primary">
+                    <h3 className="text-h3 text-on-surface-primary">
                         <CountUp value={6821} shouldAnimate={shouldAnimate} />
                     </h3>
-                    <p className="text-p-md text-secondary">Positions</p>
+                    <p className="text-p-md text-on-surface-secondary">Positions</p>
                 </motion.div>
 
                 <motion.div className="flex flex-col gap-2" variants={item}>
-                    <h3 className="text-h3 text-primary">
+                    <h3 className="text-h3 text-on-surface-primary">
                         $ <CountUp value={7.20} suffix="B" decimals={2} shouldAnimate={shouldAnimate} />
                     </h3>
-                    <p className="text-p-md text-secondary">TVL</p>
+                    <p className="text-p-md text-on-surface-secondary">TVL</p>
                 </motion.div>
             </div>
         </motion.div>

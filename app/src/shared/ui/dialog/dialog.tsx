@@ -50,7 +50,7 @@ function DialogContent({
             <DialogPrimitive.Popup
                 data-slot="dialog-content"
                 className={cn(
-                    "bg-elevated border border-border text-primary data-open:animate-in data-closed:animate-out data-open:fade-in-0 data-closed:fade-out-0 data-open:slide-in-from-right-8 data-closed:slide-out-to-right-8 fixed right-6 z-50 flex flex-col w-full gap-4 overflow-y-auto overflow-x-hidden rounded-xl p-6 duration-200 outline-none",
+                    "bg-surface-secondary border border-stroke-primary text-on-surface-primary data-open:animate-in data-closed:animate-out data-open:fade-in-0 data-closed:fade-out-0 data-open:slide-in-from-right-8 data-closed:slide-out-to-right-8 fixed right-6 z-50 flex flex-col w-full gap-4 overflow-y-auto overflow-x-hidden rounded-xl p-6 duration-200 outline-none",
                     isMobile
                         ? "top-[calc(50%+43.5px)] max-h-[calc(100vh-120px)] max-w-[calc(100%-3rem)] -translate-y-1/2"
                         : "top-1/2 max-h-[85vh] max-w-lg -translate-y-1/2",
@@ -98,7 +98,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
         <DialogPrimitive.Title
             data-slot="dialog-title"
             className={cn(
-                "text-h6 text-primary wrap-anywhere",
+                "text-h6 text-on-surface-primary wrap-anywhere",
                 className,
             )}
             {...props}
@@ -114,7 +114,7 @@ function DialogDescription({
         <DialogPrimitive.Description
             data-slot="dialog-description"
             className={cn(
-                "text-p-xsm text-secondary truncate",
+                "text-p-xsm text-on-surface-secondary truncate",
                 className,
             )}
             {...props}

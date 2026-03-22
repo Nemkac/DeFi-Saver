@@ -15,13 +15,14 @@ export function CdpDetailContent({ position }: { position: Position }) {
     })
 
     const liquidationRatio = position.liquidationRatio
-    const color = position.ratio >= liquidationRatio ? 'text-action' : 'text-red-400'
+    const color = position.ratio >= liquidationRatio ? 'text-light-green' : 'text-light-red'
+    const decimalColor = position.ratio >= liquidationRatio ? 'text-dark-green' : 'text-dark-red'
 
     return (
         <div className="flex flex-col gap-3">
             <InfoField title='Owner'>
                 <a href={`https://app.defisaver.com/makerdao/manage?trackAddress=${position.ownerEoa}`} target="_blank" rel="noreferrer">
-                    <div className='flex flex-row underline hover:text-action-hover gap-2 items-center'>
+                    <div className='flex flex-row underline hover:text-light-green gap-2 items-center'>
                         <img src='20-master.svg' className='size-4' />
                         {`${position.owner.slice(0, 6)}...${position.owner.slice(-4)}`}
                         <IconExternalLink className='size-4' />
@@ -36,21 +37,26 @@ export function CdpDetailContent({ position }: { position: Position }) {
                 </div>
             </InfoField>
             <InfoField title="Debt">{position.debt}</InfoField>
-            <InfoField title="Ratio"><p className={`text-p-md ${color}`}>{position.ratio}%</p></InfoField>
+            <InfoField title="Ratio">
+                <p className={`text-p-md ${color}`}>
+                    {position.ratio.toString().split('.')[0]}
+                    <span className={decimalColor}>.{position.ratio.toString().split('.')[1]}%</span>
+                </p>
+            </InfoField>
 
             {isLoading && (
                 <div className="flex items-center gap-2 pt-2">
-                    <div className="size-4 rounded-full border-2 border-action border-t-transparent animate-spin" />
-                    <p className="text-p-sm text-secondary">Loading vault details...</p>
+                    <div className="size-4 rounded-full border-2 border-indicator-primary border-t-transparent animate-spin" />
+                    <p className="text-p-sm text-on-surface-secondary">Loading vault details...</p>
                 </div>
             )}
             {isError && (
-                <p className="text-p-sm text-red-400">Failed to load vault details</p>
+                <p className="text-p-sm text-light-red">Failed to load vault details</p>
             )}
 
             {cdpDetail && (
                 <>
-                    <div className="my-1 h-px bg-border" />
+                    <div className="my-1 h-px bg-stroke-primary" />
                     <InfoField title="Liquidation Ratio">{cdpDetail.liquidationRatio}%</InfoField>
                     <InfoField title="Liquidation Price">${cdpDetail.liquidationPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}</InfoField>
                 </>

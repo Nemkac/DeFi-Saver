@@ -20,7 +20,7 @@ export function DropdownMenuContent({
                 style={{ minWidth: 'var(--radix-dropdown-menu-trigger-width)' }}
                 className={[
                     'z-50 overflow-hidden rounded-lg',
-                    'border border-border bg-elevated',
+                    'border border-stroke-primary bg-surface-secondary',
                     'p-1 shadow-lg',
                     'data-[state=open]:animate-in data-[state=closed]:animate-out',
                     'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
@@ -42,7 +42,7 @@ export function DropdownMenuSubContent({
         <Radix.SubContent
             className={[
                 'z-50 min-w-32 overflow-hidden rounded-lg',
-                'border border-border bg-elevated',
+                'border border-stroke-primary bg-surface-secondary',
                 'p-1 shadow-lg',
                 'data-[state=open]:animate-in data-[state=closed]:animate-out',
                 'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
@@ -65,15 +65,15 @@ export function DropdownMenuSubTrigger({
         <Radix.SubTrigger
             className={[
                 'flex cursor-default select-none items-center gap-2 rounded-md px-3 py-1.5',
-                'text-p-sm text-primary outline-none',
-                'focus:bg-hover data-[state=open]:bg-hover',
+                'text-p-sm text-on-surface-primary outline-none',
+                'focus:bg-surface-tertiary data-[state=open]:bg-hover',
                 inset ? 'pl-8' : '',
                 className,
             ].join(' ')}
             {...props}
         >
             {children}
-            <ChevronRight className="ml-auto h-3.5 w-3.5 text-secondary" />
+            <ChevronRight className="ml-auto h-3.5 w-3.5 text-on-surface-secondary" />
         </Radix.SubTrigger>
     )
 }
@@ -87,8 +87,8 @@ export function DropdownMenuItem({
         <Radix.Item
             className={[
                 'relative flex cursor-default select-none items-center gap-2 rounded-md px-3 py-1.5',
-                'text-p-sm text-primary outline-none transition-colors',
-                'focus:bg-hover focus:text-primary',
+                'text-p-sm text-on-surface-primary outline-none transition-colors',
+                'focus:bg-surface-tertiary focus:text-on-surface-primary',
                 'data-disabled:pointer-events-none data-disabled:opacity-40',
                 inset ? 'pl-8' : '',
                 className,
@@ -108,8 +108,8 @@ export function DropdownMenuCheckboxItem({
         <Radix.CheckboxItem
             className={[
                 'relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-3',
-                'text-p-sm text-primary outline-none transition-colors',
-                'focus:bg-hover focus:text-primary',
+                'text-p-sm text-on-surface-primary outline-none transition-colors',
+                'focus:bg-on-surface-tertiary focus:text-on-surface-primary',
                 'data-disabled:pointer-events-none data-disabled:opacity-40',
                 className,
             ].join(' ')}
@@ -135,8 +135,8 @@ export function DropdownMenuRadioItem({
         <Radix.RadioItem
             className={[
                 'relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-3',
-                'text-p-sm text-primary outline-none transition-colors',
-                'focus:bg-hover focus:text-primary',
+                'text-p-sm text-on-surface-primary outline-none transition-colors',
+                'focus:bg-surface-tertiary focus:text-on-surface-primary',
                 'data-disabled:pointer-events-none data-disabled:opacity-40',
                 className,
             ].join(' ')}
@@ -160,7 +160,7 @@ export function DropdownMenuLabel({
     return (
         <Radix.Label
             className={[
-                'px-3 py-1.5 text-p-xsm-bold text-secondary uppercase tracking-widest',
+                'px-3 py-1.5 text-p-xsm-bold text-on-surface-secondary uppercase tracking-widest',
                 inset ? 'pl-8' : '',
                 className,
             ].join(' ')}
@@ -175,7 +175,7 @@ export function DropdownMenuSeparator({
 }: Radix.DropdownMenuSeparatorProps) {
     return (
         <Radix.Separator
-            className={['mx-1 my-1 h-px bg-border', className].join(' ')}
+            className={['mx-1 my-1 h-px bg-stroke-primary', className].join(' ')}
             {...props}
         />
     )
@@ -184,7 +184,7 @@ export function DropdownMenuSeparator({
 export function DropdownMenuShortcut({ className = '', ...props }: React.HTMLAttributes<HTMLSpanElement>) {
     return (
         <span
-            className={['ml-auto text-p-xsm text-secondary tracking-widest', className].join(' ')}
+            className={['ml-auto text-p-xsm text-on-surface-secondary tracking-widest', className].join(' ')}
             {...props}
         />
     )

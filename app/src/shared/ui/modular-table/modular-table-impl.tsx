@@ -59,7 +59,7 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         renderTopToolbarCustomActions: label
             ? () => (
                 <div className="flex items-center h-full p-2">
-                    <span className="text-p-sm uppercase text-secondary">{label}</span>
+                    <span className="text-p-sm uppercase text-on-surface-secondary">{label}</span>
                 </div>
             )
             : undefined,
@@ -70,7 +70,7 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
                 <div className="flex flex-col items-center gap-3">
                     <div className="size-8 rounded-full border-2 border-table-accent border-t-transparent animate-spin" />
                     {loadingText && (
-                        <p className="text-p-sm text-secondary">{loadingText}</p>
+                        <p className="text-p-sm text-on-surface-secondary">{loadingText}</p>
                     )}
                 </div>
             ),
@@ -98,7 +98,7 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
             className: 'text-p-md',
         },
         mantineTableBodyCellProps: {
-            className: 'text-primary',
+            className: '-on-surface-primary',
         },
         mantineTableBodyRowProps: ({ row }) => {
             const isHighlighted = highlightedRowId != null && String(row.original.id) === highlightedRowId

@@ -31,8 +31,8 @@ export function SelectDropdown<T extends string>({
 
     const displayValue = selected ? (
         <div className="flex flex-row items-center gap-1">
-            {selected.icon && <img src={selected.icon} className="size-4" />}
-            <span className="text-p-md text-primary">{selected.title}</span>
+            {selected.icon && <img src={selected.icon} className="size-5" />}
+            <span className="text-p-md text-on-surface-primary ml-1">{selected.title}</span>
         </div>
     ) : (
         allLabel
@@ -41,22 +41,22 @@ export function SelectDropdown<T extends string>({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="flex items-center w-full justify-between md:w-auto p-4 gap-2 rounded-xl border border-border bg-elevated text-p-md text-primary hover:bg-hover outline-none focus:outline-none transition-colors">
-                    <div className="flex flex-row w-full justify-between items-center text-secondary text-p-md-bold gap-6">
+                <button className="flex items-center w-full justify-between md:w-auto p-4 gap-2 rounded-xl border border-stroke-primary bg-surface-secondary text-p-md text-primary hover:bg-hover outline-none focus:outline-none transition-colors">
+                    <div className="flex flex-row w-full justify-between items-center text-on-surface-secondary text-p-md-bold gap-6">
                         {label}:
-                        <span className="text-primary">{displayValue}</span>
+                        <span className="text-on-surface-primary">{displayValue}</span>
                     </div>
-                    <ChevronDown className="size-5 text-secondary" />
+                    <ChevronDown className="size-5 text-on-surface-secondary" />
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onSelect={() => onChange(null)}>
-                    <span className='py-2'> {allLabel}</span>
+                    <span className='py-2 text-p-md'> {allLabel}</span>
                 </DropdownMenuItem>
                 {options.map((option) => (
                     <DropdownMenuItem key={option.id} onSelect={() => onChange(option.id)}>
-                        <div className="flex flex-row items-center gap-2 py-2">
-                            {option.icon && <img src={option.icon} className="size-4" />}
+                        <div className="flex flex-row items-center text-p-md gap-2 py-2">
+                            {option.icon && <img src={option.icon} className="size-5" />}
                             {option.title}
                         </div>
                     </DropdownMenuItem>

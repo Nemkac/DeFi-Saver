@@ -79,7 +79,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 32 }}
                                     transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                                    className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col w-full max-w-lg max-h-[85vh] gap-4 overflow-y-auto overflow-x-hidden rounded-xl p-6 bg-elevated border border-border text-primary shadow-xl"
+                                    className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col w-full max-w-lg max-h-[85vh] gap-4 overflow-y-auto overflow-x-hidden rounded-xl p-6 bg-surface-secondary border border-stroke-primary text-on-surface-primary shadow-xl"
                                 >
                                     {(title || description) && (
                                         <div className="flex items-start justify-between gap-4">

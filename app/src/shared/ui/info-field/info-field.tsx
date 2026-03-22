@@ -7,10 +7,10 @@ type InfoFieldProps = {
 const InfoField = ({ title, orientation = 'row', children }: InfoFieldProps) => {
     return (
         <div className={`flex flex-${orientation} gap-2 ${orientation === 'row' ? 'justify-between items-center' : ''}`}>
-            <p className="text-p-xsm-bold text-secondary">
+            <p className="text-p-xsm-bold text-on-surface-secondary">
                 {title}
             </p>
-            <p className="text-p-md text-primary truncate min-w-0">
+            <p className="text-p-md text-on-surface-primary truncate min-w-0">
                 {children}
             </p>
         </div>

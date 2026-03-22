@@ -35,10 +35,10 @@ export function CdpPositionsPage() {
 
     const tableLabel = isLoading ? undefined : (() => {
         const count = data.length
-        if (collateral && debounceCdpId) return `Displaying ${count} ${collateral} CDP positions closest to #${debounceCdpId}`
-        if (collateral) return `Displaying last ${count} ${collateral} CDP positions`
-        if (debounceCdpId) return `Displaying ${count} CDP positions closest to #${debounceCdpId}`
-        return `Displaying ${count} CDP positions`
+        if (collateral && debounceCdpId) return `Showing ${count} ${collateral} CDP positions closest to #${debounceCdpId}`
+        if (collateral) return `Showing last ${count} ${collateral} CDP positions`
+        if (debounceCdpId) return `Showing ${count} CDP positions closest to #${debounceCdpId}`
+        return `Showing total of ${count} CDP positions`
     })()
 
     if (isError) console.error("CDP fetch error: ", error);
@@ -63,14 +63,17 @@ export function CdpPositionsPage() {
     }
 
     return (
-        <main className="p-6 flex flex-col gap-4">
+        <main className="p-6 flex flex-col gap-8">
 
-            <DataFilters
-                collateral={collateral}
-                onCollateralChange={setCollateral}
-                cdpId={cdpId}
-                onCdpIdChange={setCdpId}
-            />
+            <div className='flex flex-col md:flex-row w-full md:items-center gap-4'>
+                <DataFilters
+                    collateral={collateral}
+                    onCollateralChange={setCollateral}
+                    cdpId={cdpId}
+                    onCdpIdChange={setCdpId}
+                    countLabel={tableLabel}
+                />
+            </div>
 
             <div className="hidden md:block overflow-x-auto min-w-0">
                 <ModularTable
