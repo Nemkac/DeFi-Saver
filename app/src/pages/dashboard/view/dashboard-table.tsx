@@ -36,9 +36,7 @@ const DashboardTableSection = () => {
         refetchOnWindowFocus: false,
     })
 
-    const handleRowClick = (row: unknown) => {
-        const position = row as Position
-
+    const handleRowClick = (position: Position) => {
         if (openModalId) modal.close(openModalId)
 
         setHighlightedRowId(position.id)

@@ -21,7 +21,6 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
         [],
     )
 
-    // Programmatic close — does NOT call onClose. onClose is reserved for explicit user dismissal.
     const close = useCallback((id: string) => {
         setModals((prev) => prev.map((m) => m.id === id ? { ...m, open: false } : m))
     }, [])
@@ -33,7 +32,6 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     const { pathname } = useLocation()
     useEffect(() => { closeAll() }, [pathname])
 
-    // Escape key — dismisses the topmost open modal and fires its onClose
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
             if (e.key !== 'Escape') return
@@ -78,7 +76,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
                                     initial={{ opacity: 0, x: 32 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 32 }}
-                                    transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                                     className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col w-full max-w-lg max-h-[85vh] gap-4 overflow-y-auto overflow-x-hidden rounded-xl p-6 bg-surface-secondary border border-stroke-primary text-on-surface-primary shadow-xl"
                                 >
                                     {(title || description) && (

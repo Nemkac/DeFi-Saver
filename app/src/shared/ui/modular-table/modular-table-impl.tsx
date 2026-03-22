@@ -9,7 +9,6 @@ export type ModularTableProps<TData extends Record<string, unknown>> = {
     isLoading?: boolean
     storageKey?: string
     loadingText?: string
-    label?: string
     highlightedRowId?: string
     onRowClick?: (row: TData) => void
     showTopToolbar?: boolean
@@ -29,7 +28,6 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
     data,
     isLoading,
     loadingText,
-    label,
     highlightedRowId,
     onRowClick,
     columnSizing,
@@ -56,13 +54,6 @@ function ModularTableImpl<TData extends Record<string, unknown>>({
         enableBottomToolbar: showPagination,
         enableTopToolbar: showTopToolbar,
         enableFilters: false,
-        renderTopToolbarCustomActions: label
-            ? () => (
-                <div className="flex items-center h-full p-2">
-                    <span className="text-p-sm uppercase text-on-surface-secondary">{label}</span>
-                </div>
-            )
-            : undefined,
         mantineLoadingOverlayProps: {
             overlayColor: 'var(--table-bg)',
             overlayOpacity: 0.95,

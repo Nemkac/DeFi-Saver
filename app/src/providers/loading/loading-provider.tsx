@@ -9,12 +9,10 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
     const queryClient = useQueryClient()
     const isFetching = useIsFetching()
 
-    // Capture at mount time — true on every page reload, false on SPA navigation
     const [isGlobalLoad] = useState(() => isFirstLoad)
     const [appReady, setAppReady] = useState(!isGlobalLoad)
     const hasStartedFetching = useRef(false)
 
-    // Kick off the data fetch so useIsFetching picks it up
     useEffect(() => {
         if (!isGlobalLoad) return
         queryClient.prefetchQuery({

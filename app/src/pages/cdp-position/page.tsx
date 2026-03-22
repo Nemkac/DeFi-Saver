@@ -33,7 +33,7 @@ export function CdpPositionsPage() {
 
     const { columns } = useDataTablePageConfig();
 
-    const tableLabel = isLoading ? undefined : (() => {
+    const totalShowLabel = isLoading ? undefined : (() => {
         const count = data.length
         if (collateral && debounceCdpId) return `Showing ${count} ${collateral} CDP positions closest to #${debounceCdpId}`
         if (collateral) return `Showing last ${count} ${collateral} CDP positions`
@@ -43,8 +43,7 @@ export function CdpPositionsPage() {
 
     if (isError) console.error("CDP fetch error: ", error);
 
-    const handleRowClick = (row: unknown) => {
-        const position = row as Position
+    const handleRowClick = (position: Position) => {
 
         if (openModalId) modal.close(openModalId)
 
@@ -71,7 +70,7 @@ export function CdpPositionsPage() {
                     onCollateralChange={setCollateral}
                     cdpId={cdpId}
                     onCdpIdChange={setCdpId}
-                    countLabel={tableLabel}
+                    countLabel={totalShowLabel}
                 />
             </div>
 
@@ -80,7 +79,6 @@ export function CdpPositionsPage() {
                     columns={columns}
                     isLoading={isLoading}
                     loadingText={fetchProgress ?? undefined}
-                    label={tableLabel}
                     highlightedRowId={highlightedRowId ?? undefined}
                     data={data}
                     storageKey="positions-table"
