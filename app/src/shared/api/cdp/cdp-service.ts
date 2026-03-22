@@ -3,6 +3,7 @@ import { ilkToAsset } from '@defisaver/tokens'
 import { client } from '../../lib/utility-functions/viemClient'
 import { CDP_MANAGER_ADDRESS, CDP_MANAGER_ABI, VAT_ABI, VAT_ADDRESS, SPOTTER_ADDRESS, SPOTTER_ABI, VAULT_INFO_ADDRESS, VAULT_INFO_ABI } from './contracts'
 import type { Position } from '#/shared/api/types/position'
+import type { CdpInfo } from '../types/cdp-info'
 
 export type CollateralFilter = 'ETH-A' | 'WBTC-A' | 'USDC-A' | null
 
@@ -17,7 +18,6 @@ const RAY = 10n ** 27n
 async function fetchBatch(ids: bigint[]): Promise<Position[]> {
     if (ids.length === 0) return []
 
-    // Wave 1: get all CDP data in one multicall
     const infoResults = await client.multicall({
         contracts: ids.map((id) => ({
             address: VAULT_INFO_ADDRESS,
@@ -26,15 +26,6 @@ async function fetchBatch(ids: bigint[]): Promise<Position[]> {
             args: [id] as [bigint],
         })),
     })
-
-    type CdpInfo = {
-        id: bigint
-        owner: `0x${string}`
-        userAddr: `0x${string}`
-        ilkBytes: `0x${string}`
-        ink: bigint
-        art: bigint
-    }
 
     const cdpData: CdpInfo[] = []
     for (let i = 0; i < ids.length; i++) {
@@ -47,8 +38,6 @@ async function fetchBatch(ids: bigint[]): Promise<Position[]> {
 
     if (cdpData.length === 0) return []
 
-    // Wave 2: fetch rate + spot (Vat) and liquidation ratio (Spotter) for the unique ilk
-    // types that actually appear in this batch — covers all collateral types dynamically
     const uniqueIlkBytes = [...new Set(cdpData.map((c) => c.ilkBytes))]
 
     const ilkResults = await client.multicall({
