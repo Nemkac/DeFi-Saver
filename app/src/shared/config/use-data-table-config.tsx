@@ -35,15 +35,30 @@ export const useDataTablePageConfig = () => {
                     }
 
                     return (
-                        <div className="flex flex-row items-center gap-2">
+                        <div className="flex flex-row items-center gap-2 justify-end w-full text-end">
                             <span className="text-p-md-bold">{coll.split(' ')[0]}</span>
-                            <img src={getIcon(curr)} alt={curr} className='size-4' />
-                            {curr}
+                            <div className="flex flex-row items-center gap-1">
+                                <img src={getIcon(curr)} alt={curr} className='size-4' />
+                                <span className="text-secondary">{curr}</span>
+                            </div>
                         </div>
                     )
                 },
             },
-            { accessorKey: 'debt', header: 'Debt', size: 140 },
+            {
+                accessorKey: 'debt',
+                header: 'Debt',
+                size: 140,
+                Cell: ({ cell }) => {
+                    const coll = cell.getValue<Position['debt']>()
+
+                    return (
+                        <div className="flex flex-row justify-end w-full text-end">
+                            <span className="text-p-md-bold">{coll}</span>
+                        </div>
+                    )
+                },
+            },
             {
                 accessorKey: 'ratio',
                 header: 'Ratio',

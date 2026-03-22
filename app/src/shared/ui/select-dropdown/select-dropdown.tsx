@@ -3,8 +3,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../dropdown-menu/dropdown-menu'
 
@@ -15,7 +13,7 @@ export type SelectDropdownOption<T extends string> = {
 }
 
 type SelectDropdownProps<T extends string> = {
-    label: string
+    label?: string
     value: T | null
     onChange: (value: T | null) => void
     options: SelectDropdownOption<T>[]
@@ -27,7 +25,7 @@ export function SelectDropdown<T extends string>({
     value,
     onChange,
     options,
-    allLabel = 'All',
+    allLabel = 'Select All',
 }: SelectDropdownProps<T>) {
     const selected = options.find((o) => o.id === value)
 
@@ -52,14 +50,12 @@ export function SelectDropdown<T extends string>({
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuLabel>{label}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => onChange(null)}>
-                    {allLabel}
+                    <span className='py-2'> {allLabel}</span>
                 </DropdownMenuItem>
                 {options.map((option) => (
                     <DropdownMenuItem key={option.id} onSelect={() => onChange(option.id)}>
-                        <div className="flex flex-row items-center gap-2">
+                        <div className="flex flex-row items-center gap-2 py-2">
                             {option.icon && <img src={option.icon} className="size-4" />}
                             {option.title}
                         </div>
