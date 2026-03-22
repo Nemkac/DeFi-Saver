@@ -46,6 +46,10 @@
   box-shadow: inset 3px 0 0 var(--table-accent);
 }
 
+.mrt-wrapper table tbody tr:nth-child(even) td {
+  background-color: color-mix(in srgb, var(--table-bg) 85%, white 2%) !important;
+}
+
 .mrt-wrapper table tbody tr:hover td {
   background-color: var(--table-hover-bg) !important;
 }
@@ -90,4 +94,10 @@
   background-color: var(--table-hover-bg) !important;
   border: 1px solid var(--table-accent) !important;
   color: var(--text-primary) !important;
+}
+
+.mrt-wrapper .mantine-LoadingOverlay-root,
+.mrt-wrapper .mantine-LoadingOverlay-overlay,
+.mrt-wrapper .mantine-Overlay-root {
+  z-index: 10 !important;
 }

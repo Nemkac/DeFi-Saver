@@ -38,7 +38,7 @@ export function CdpPositionsPage() {
         if (collateral && debounceCdpId) return `Displaying ${count} ${collateral} CDP positions closest to #${debounceCdpId}`
         if (collateral) return `Displaying last ${count} ${collateral} CDP positions`
         if (debounceCdpId) return `Displaying ${count} CDP positions closest to #${debounceCdpId}`
-        return `Displaying last ${count} CDP positions`
+        return `Displaying ${count} CDP positions`
     })()
 
     if (isError) console.error("CDP fetch error: ", error);

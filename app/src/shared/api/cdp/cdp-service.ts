@@ -1,7 +1,7 @@
 import { hexToString } from 'viem'
 import { ilkToAsset } from '@defisaver/tokens'
 import { client } from '../../lib/utility-functions/viemClient'
-import { CDP_MANAGER_ADDRESS, CDP_MANAGER_ABI, VAT_ABI, VAT_ADDRESS, SPOTTER_ADDRESS, SPOTTER_ABI, DS_PROXY_ABI } from './contracts'
+import { CDP_MANAGER_ADDRESS, CDP_MANAGER_ABI, VAT_ABI, VAT_ADDRESS, SPOTTER_ADDRESS, SPOTTER_ABI, VAULT_INFO_ADDRESS, VAULT_INFO_ABI } from './contracts'
 import type { Position } from '#/shared/api/types/position'
 
 export type CollateralFilter = 'ETH-A' | 'WBTC-A' | 'USDC-A' | null
@@ -14,52 +14,45 @@ export type CdpDetail = {
 const WAD = 10n ** 18n
 const RAY = 10n ** 27n
 
-
 async function fetchBatch(ids: bigint[]): Promise<Position[]> {
     if (ids.length === 0) return []
 
-    const managerResults = await client.multicall({
-        contracts: ids.flatMap((id) => [
-            { address: CDP_MANAGER_ADDRESS, abi: CDP_MANAGER_ABI, functionName: 'owns', args: [id] },
-            { address: CDP_MANAGER_ADDRESS, abi: CDP_MANAGER_ABI, functionName: 'ilks', args: [id] },
-            { address: CDP_MANAGER_ADDRESS, abi: CDP_MANAGER_ABI, functionName: 'urns', args: [id] },
-        ]),
-    })
-
-    const cdpData = ids
-        .map((id, i) => ({
-            id,
-            owner: managerResults[i * 3].result as unknown as `0x${string}`,
-            ilkBytes: managerResults[i * 3 + 1].result as unknown as `0x${string}`,
-            urnAddress: managerResults[i * 3 + 2].result as unknown as `0x${string}`,
-        }))
-        .filter((c) => c.ilkBytes && c.urnAddress)
-
-    if (cdpData.length === 0) return []
-
-    const proxyOwnerResults = await client.multicall({
-        contracts: cdpData.map((c) => ({
-            address: c.owner,
-            abi: DS_PROXY_ABI,
-            functionName: 'owner' as const,
+    // Wave 1: get all CDP data in one multicall
+    const infoResults = await client.multicall({
+        contracts: ids.map((id) => ({
+            address: VAULT_INFO_ADDRESS,
+            abi: VAULT_INFO_ABI,
+            functionName: 'getCdpInfo' as const,
+            args: [id] as [bigint],
         })),
     })
 
-    const cdpDataWithEoa = cdpData.map((c, i) => ({
-        ...c,
-        ownerEoa: (proxyOwnerResults[i].result as `0x${string}` | undefined) ?? c.owner,
-    }))
+    type CdpInfo = {
+        id: bigint
+        owner: `0x${string}`
+        userAddr: `0x${string}`
+        ilkBytes: `0x${string}`
+        ink: bigint
+        art: bigint
+    }
 
+    const cdpData: CdpInfo[] = []
+    for (let i = 0; i < ids.length; i++) {
+        const result = infoResults[i].result as [`0x${string}`, `0x${string}`, `0x${string}`, `0x${string}`, bigint, bigint] | undefined
+        if (!result) continue
+        const [urn, owner, userAddr, ilkBytes, ink, art] = result
+        if (!ilkBytes || urn === '0x0000000000000000000000000000000000000000') continue
+        cdpData.push({ id: ids[i], owner, userAddr, ilkBytes, ink, art })
+    }
+
+    if (cdpData.length === 0) return []
+
+    // Wave 2: fetch rate + spot (Vat) and liquidation ratio (Spotter) for the unique ilk
+    // types that actually appear in this batch — covers all collateral types dynamically
     const uniqueIlkBytes = [...new Set(cdpData.map((c) => c.ilkBytes))]
 
-    const vatResults = await client.multicall({
+    const ilkResults = await client.multicall({
         contracts: [
-            ...cdpDataWithEoa.map((c) => ({
-                address: VAT_ADDRESS,
-                abi: VAT_ABI,
-                functionName: 'urns' as const,
-                args: [c.ilkBytes, c.urnAddress] as [`0x${string}`, `0x${string}`],
-            })),
             ...uniqueIlkBytes.map((ilk) => ({
                 address: VAT_ADDRESS,
                 abi: VAT_ABI,
@@ -75,9 +68,8 @@ async function fetchBatch(ids: bigint[]): Promise<Position[]> {
         ],
     })
 
-    const vatUrnResults = vatResults.slice(0, cdpData.length)
-    const vatIlkResults = vatResults.slice(cdpData.length, cdpData.length + uniqueIlkBytes.length)
-    const spotterIlkResults = vatResults.slice(cdpData.length + uniqueIlkBytes.length)
+    const vatIlkResults = ilkResults.slice(0, uniqueIlkBytes.length)
+    const spotterIlkResults = ilkResults.slice(uniqueIlkBytes.length)
 
     const ilkDataMap = new Map(
         uniqueIlkBytes.map((ilk, i) => [
@@ -95,14 +87,11 @@ async function fetchBatch(ids: bigint[]): Promise<Position[]> {
 
     const positions: Position[] = []
 
-    for (let i = 0; i < cdpDataWithEoa.length; i++) {
-        const cdp = cdpDataWithEoa[i]
-        const urnResult = vatUrnResults[i].result as unknown as [bigint, bigint] | undefined
+    for (const cdp of cdpData) {
         const ilkResult = ilkDataMap.get(cdp.ilkBytes)
+        if (!ilkResult) continue
 
-        if (!urnResult || !ilkResult) continue
-
-        const [ink, art] = urnResult
+        const { ink, art } = cdp
         const rate = ilkResult[1]
         const spot = ilkResult[2]
 
@@ -123,7 +112,7 @@ async function fetchBatch(ids: bigint[]): Promise<Position[]> {
         positions.push({
             id: cdp.id.toString(),
             owner: cdp.owner,
-            ownerEoa: cdp.ownerEoa,
+            ownerEoa: cdp.userAddr,
             ilk,
             ilkBytes: cdp.ilkBytes,
             collateralAmount,
@@ -138,12 +127,20 @@ async function fetchBatch(ids: bigint[]): Promise<Position[]> {
     return positions
 }
 
+const BROWSE_LIMIT = 100
+const SEARCH_LIMIT = 20
+
 export async function fetchCdps(
     searchId: string | null,
     collateralFilter: CollateralFilter,
-    onProgress?: (message: string) => void
+    onProgress?: (message: string) => void,
+    limit?: number
 ): Promise<Position[]> {
+    const isSearchMode = !!(searchId || collateralFilter)
+    const resultLimit = limit ?? (isSearchMode ? SEARCH_LIMIT : BROWSE_LIMIT)
+
     onProgress?.('Fetching latest CDP ID...')
+
     const lastId = await client.readContract({
         address: CDP_MANAGER_ADDRESS,
         abi: CDP_MANAGER_ABI,
@@ -154,10 +151,9 @@ export async function fetchCdps(
     const BATCH_SIZE = 50n
     const MAX_RINGS = searchId && collateralFilter ? 50 : 25
 
-    const tasks: (() => Promise<Position[]>)[] = [];
+    const tasks: (() => Promise<Position[]>)[] = []
 
     for (let ring = 0; ring < MAX_RINGS; ring++) {
-        // Each ring covers 50 IDs on each side of the target
         const lowerFrom = targetId - BigInt(ring + 1) * BATCH_SIZE
         const lowerTo = targetId - BigInt(ring) * BATCH_SIZE - 1n
         const upperFrom = targetId + BigInt(ring) * BATCH_SIZE
@@ -199,7 +195,7 @@ export async function fetchCdps(
 
         onProgress?.(`Scanned ${completedCount}/${tasks.length} batches, found ${matchingCount} positions...`)
 
-        if (matchingCount >= 20) break
+        if (matchingCount >= resultLimit) break
     }
 
     const result = collateralFilter
@@ -212,12 +208,11 @@ export async function fetchCdps(
         return distA - distB
     })
 
-    return result.slice(0, 20)
+    return result.slice(0, resultLimit)
 }
 
 export async function fetchLastCdps(): Promise<Position[]> {
-    const positions = await fetchCdps(null, null)
-    return positions.slice(0, 10)
+    return fetchCdps(null, null, undefined, 10)
 }
 
 export async function fetchCdpDetail(

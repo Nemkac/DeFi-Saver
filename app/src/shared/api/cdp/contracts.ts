@@ -2,11 +2,12 @@ import { getAddress } from 'viem'
 
 export const CDP_MANAGER_ADDRESS = '0x5ef30b9986345249bc32d8928B7ee64DE9435E39' as const;
 export const VAT_ADDRESS = '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B' as const;
+export const VAULT_INFO_ADDRESS = '0x68C61AF097b834c68eA6EA5e46aF6c04E8945B2d' as const;
 
 export const SPOTTER_ADDRESS = getAddress('0x65c79fcb50ca1594b025960e539ed7a9a6d434a3')
 
 
-// Functions from CDP Manager
+// Functions from CDP Manager - only cdpi needed, getCdpInfo handles the rest
 export const CDP_MANAGER_ABI = [
     {
         //ID of the last CDP ever created. Tells the upper bound for fetching
@@ -16,30 +17,24 @@ export const CDP_MANAGER_ABI = [
         inputs: [],
         outputs: [{ name: '', type: 'uint256' }]
     },
+] as const;
+
+// VaultInfo helper contract - returns all CDP data in a single call
+export const VAULT_INFO_ABI = [
     {
-        //Owners Ethereum address
-        name: 'owns',
+        name: 'getCdpInfo',
         type: 'function',
         stateMutability: 'view',
-        inputs: [{ name: 'cdp', type: 'uint256' }],
-        outputs: [{ name: '', type: 'address' }]
+        inputs: [{ name: '_cdpId', type: 'uint256' }],
+        outputs: [
+            { name: 'urn', type: 'address' },       // vault address inside Vat
+            { name: 'owner', type: 'address' },      // proxy owner address
+            { name: 'userAddr', type: 'address' },   // actual EOA (resolved through proxy)
+            { name: 'ilk', type: 'bytes32' },        // collateral type identifier
+            { name: 'collateral', type: 'uint256' }, // ink - collateral amount in WAD
+            { name: 'debt', type: 'uint256' },       // art - normalized debt
+        ],
     },
-    {
-        //Collateral type identifier
-        name: 'ilks',
-        type: 'function',
-        stateMutability: 'view',
-        inputs: [{ name: 'cdp', type: 'uint256' }],
-        outputs: [{ name: '', type: 'bytes32' }]
-    },
-    {
-        //Personal vault address inside the Vat where the actual collateral/debt accounting lives
-        name: 'urns',
-        type: 'function',
-        stateMutability: 'view',
-        inputs: [{ name: 'cdp', type: 'uint256' }],
-        outputs: [{ name: '', type: 'address' }],
-    }
 ] as const;
 
 
@@ -74,16 +69,6 @@ export const VAT_ABI = [
         ]
     }
 ] as const;
-
-export const DS_PROXY_ABI = [
-    {
-        name: 'owner',
-        type: 'function',
-        stateMutability: 'view',
-        inputs: [],
-        outputs: [{ name: '', type: 'address' }],
-    },
-] as const
 
 export const SPOTTER_ABI = [
     {

@@ -22,7 +22,7 @@ export function CdpDetailContent({ position }: { position: Position }) {
             <InfoField title='Owner'>
                 <a href={`https://app.defisaver.com/makerdao/manage?trackAddress=${position.ownerEoa}`} target="_blank" rel="noreferrer">
                     <div className='flex flex-row underline hover:text-action-hover gap-2 items-center'>
-                        <img src='20-master.svg' className='size-3' />
+                        <img src='20-master.svg' className='size-4' />
                         {`${position.owner.slice(0, 6)}...${position.owner.slice(-4)}`}
                         <IconExternalLink className='size-4' />
                     </div>
@@ -31,7 +31,7 @@ export function CdpDetailContent({ position }: { position: Position }) {
             <InfoField title="Vault">{position.ilk}</InfoField>
             <InfoField title="Collateral">
                 <div className='flex flex-row gap-2 items-center'>
-                    <img src={getCollateralImage(position.ilk)} />
+                    <img src={getCollateralImage(position.ilk)} className='size-4' />
                     {position.collateral}
                 </div>
             </InfoField>

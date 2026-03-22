@@ -96,7 +96,7 @@ const DashboardTableSection = () => {
             <motion.div className="flex md:hidden flex-col gap-8" variants={item}>
                 {isLoading
                     ? Array.from({ length: 3 }).map((_, i) => <CdpCardSkeleton key={i} />)
-                    : data.map((position) => (
+                    : data.map((position: Position) => (
                         <DataCard key={position.id} position={position} />
                     ))
                 }
